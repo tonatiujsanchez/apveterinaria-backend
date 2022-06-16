@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import conectarDB from './config/db.js'
-import veterinarioRoutes from './routess/veterinarioRoutes.js'
+import veterinarioRoutes from './routes/veterinarioRoutes.js'
 
 const app = express()
 app.use( express.json() )
