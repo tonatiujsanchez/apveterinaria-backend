@@ -12,8 +12,8 @@ dotenv.config()
 conectarDB()
 
 
-
 app.use('/api/veterinarios', veterinarioRoutes)
+
 
 const PORT = process.env.PORT || 4000
 
