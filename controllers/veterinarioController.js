@@ -1,5 +1,6 @@
 import Veterinario from "../models/Veterinario.js"
 import generarJWT from "../helpers/generarJWT.js"
+import generarId from "../helpers/generarId.js"
 
 
 const registrar = async( req, res )=>{
@@ -15,7 +16,7 @@ const registrar = async( req, res )=>{
     }
 
     try {
-        // Guardar un nievo veterinario a la DB
+        // Guardar un nuevo veterinario a la DB
         const veterinario = new Veterinario(req.body)
         const veterinarioGuardado = await veterinario.save()
         res.json(veterinarioGuardado);
@@ -86,7 +87,65 @@ const autenticar = async( req, res ) => {
         token: generarJWT(existeUsuario.id)
     })
 
-    // res.json({msg: 'Auntenticando veterinario....', data: existeUsuario })
+}
+
+const olvidePassword = async(req, res) => {
+
+    const { email } = req.body
+
+    const existeUsuario = await Veterinario.findOne({email})
+    
+    if(!existeUsuario){
+        const error = new Error('El usuario no existe')
+        return res.status(400).json({ msg:error.message })
+    }
+
+    try {
+        existeUsuario.token = generarId()
+        await existeUsuario.save()
+        res.json({msg: "Hemos enviado un email con las instrucciones para restablecer tu contraseña"})
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+
+const comprobarToken = async(req, res) => {
+   const { token } = req.params
+
+   const tokenValido = await Veterinario.findOne({token})
+
+   if(!tokenValido){
+        const error = new Error('Token no válido')
+        return res.status(400).json({msg: error.message})
+   }
+
+   res.json({msg: 'Token válido y el usuario existe'})
+}
+
+
+
+const nuevoPassword = async(req, res) => {
+    const { token } = req.params
+    const { password } = req.body
+
+    const usuario = await Veterinario.findOne({token})
+
+    if(!usuario){
+        const error = new Error('Hubo un error')
+        return res.status(400).json({msg: error.message})
+    }
+
+    try {
+        usuario.token = null
+        usuario.password = password
+        await usuario.save()
+
+        res.json({msg: 'Password modificado correctamente'})
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
@@ -96,5 +155,8 @@ export {
     registrar,
     perfil,
     confirmar,
-    autenticar
+    autenticar,
+    olvidePassword,
+    comprobarToken,
+    nuevoPassword
 }
