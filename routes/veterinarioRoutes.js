@@ -6,7 +6,7 @@ import {
     autenticar, 
     olvidePassword,
     comprobarToken,
-    nuevoPassword} from '../controllers/veterinarioController.js'
+    nuevoPassword } from '../controllers/veterinarioController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = express.Router()
