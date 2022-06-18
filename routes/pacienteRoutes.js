@@ -1,7 +1,10 @@
 import express from 'express'
 import { 
     agregarPaciente, 
-    obtenerPacientes } from '../controllers/pacienteController.js'
+    obtenerPacientes, 
+    obtenerPaciente, 
+    actualizarPaciente,
+    eliminarPaciente } from '../controllers/pacienteController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = express.Router()
@@ -11,6 +14,11 @@ router
     .post(authMiddleware, agregarPaciente)
     .get(authMiddleware, obtenerPacientes)
 
+router
+    .route('/:idPaciente')
+    .get(authMiddleware, obtenerPaciente)
+    .put(authMiddleware, actualizarPaciente)
+    .delete(authMiddleware, eliminarPaciente)
 
 
 export default router
